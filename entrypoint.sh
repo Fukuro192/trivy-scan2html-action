@@ -48,7 +48,30 @@ fi
 
 # Run Trivy
 if [ "${INPUT_USE_SCAN2HTML:-true}" = "true" ]; then
+  # Build command with explicit flags for scan2html (doesn't use env vars)
   cmd=(trivy scan2html "$scanType" "$scanRef")
+
+  # Add flags based on environment variables
+  [ -n "${TRIVY_INPUT:-}" ] && cmd+=(--input "$TRIVY_INPUT")
+  [ -n "${TRIVY_EXIT_CODE:-}" ] && cmd+=(--exit-code "$TRIVY_EXIT_CODE")
+  [ "${TRIVY_IGNORE_UNFIXED:-}" = "true" ] && cmd+=(--ignore-unfixed)
+  [ -n "${TRIVY_PKG_TYPES:-}" ] && cmd+=(--pkg-types "$TRIVY_PKG_TYPES")
+  [ -n "${TRIVY_SEVERITY:-}" ] && cmd+=(--severity "$TRIVY_SEVERITY")
+  [ -n "${TRIVY_FORMAT:-}" ] && cmd+=(--format "$TRIVY_FORMAT")
+  [ -n "${TRIVY_TEMPLATE:-}" ] && cmd+=(--template "$TRIVY_TEMPLATE")
+  [ -n "${TRIVY_OUTPUT:-}" ] && cmd+=(--output "$TRIVY_OUTPUT")
+  [ -n "${TRIVY_SKIP_DIRS:-}" ] && cmd+=(--skip-dirs "$TRIVY_SKIP_DIRS")
+  [ -n "${TRIVY_SKIP_FILES:-}" ] && cmd+=(--skip-files "$TRIVY_SKIP_FILES")
+  [ -n "${TRIVY_TIMEOUT:-}" ] && cmd+=(--timeout "$TRIVY_TIMEOUT")
+  [ -n "${TRIVY_IGNORE_POLICY:-}" ] && cmd+=(--ignore-policy "$TRIVY_IGNORE_POLICY")
+  [ "${TRIVY_QUIET:-}" = "true" ] && cmd+=(--quiet)
+  [ "${TRIVY_LIST_ALL_PKGS:-}" = "true" ] && cmd+=(--list-all-pkgs)
+  [ -n "${TRIVY_SCANNERS:-}" ] && cmd+=(--scanners "$TRIVY_SCANNERS")
+  [ -n "${TRIVY_CONFIG:-}" ] && cmd+=(--config "$TRIVY_CONFIG")
+  [ -n "${TRIVY_TF_VARS:-}" ] && cmd+=(--tf-vars "$TRIVY_TF_VARS")
+  [ -n "${TRIVY_DOCKER_HOST:-}" ] && cmd+=(--docker-host "$TRIVY_DOCKER_HOST")
+  [ -n "${TRIVY_CACHE_DIR:-}" ] && cmd+=(--cache-dir "$TRIVY_CACHE_DIR")
+
   echo "Running Trivy with scan2html plugin: ${cmd[*]}"
 else
   cmd=(trivy "$scanType" "$scanRef")
