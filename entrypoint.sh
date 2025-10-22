@@ -47,8 +47,13 @@ if [ "${TRIVY_FORMAT:-}" = "sarif" ]; then
 fi
 
 # Run Trivy
-cmd=(trivy "$scanType" "$scanRef")
-echo "Running Trivy with options: ${cmd[*]}"
+if [ "${INPUT_USE_SCAN2HTML:-true}" = "true" ]; then
+  cmd=(trivy scan2html "$scanType" "$scanRef")
+  echo "Running Trivy with scan2html plugin: ${cmd[*]}"
+else
+  cmd=(trivy "$scanType" "$scanRef")
+  echo "Running Trivy with options: ${cmd[*]}"
+fi
 "${cmd[@]}"
 returnCode=$?
 

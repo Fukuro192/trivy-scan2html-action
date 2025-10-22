@@ -32,3 +32,15 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+
+      - name: Run Trivy with scan2html plugin for interactive HTML report
+        uses: Fukuro192/trivy-scan2html-action@master
+        with:
+          image-ref: 'docker.io/my-organization/my-app:${{ github.sha }}'
+          output: 'trivy-results.html'
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-scan2html-report
+          path: trivy-results.html

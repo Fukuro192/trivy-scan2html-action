@@ -1,0 +1,12 @@
+Trivy Scan2HTML Action
+
+This project is a fork of aquasecurity/trivy-action
+Original project: https://github.com/aquasecurity/trivy-action
+
+Copyright (c) 2019 Aqua Security Software Ltd.
+
+This fork adds integrated support for the scan2html plugin
+and includes modifications to the original source code.
+
+Licensed under the Apache License, Version 2.0
+

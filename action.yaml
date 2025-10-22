@@ -116,6 +116,10 @@ inputs:
     ## ${{ github.token }} is default value for actions/checkout
     ## cf. https://github.com/actions/checkout/blob/eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871/action.yml#L24
     default: ${{ github.token }}
+  use-scan2html:
+    description: 'Use the scan2html plugin to generate interactive HTML reports'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
@@ -131,6 +135,13 @@ runs:
         version: ${{ inputs.version }}
         cache: ${{ inputs.cache }}
         token: ${{ inputs.token-setup-trivy }}
+
+    - name: Install scan2html plugin
+      if: ${{ inputs.use-scan2html == 'true' }}
+      shell: bash
+      run: |
+        echo "Installing scan2html plugin..."
+        trivy plugin install scan2html
 
     - name: Get current date
       id: date
@@ -223,6 +234,7 @@ runs:
         INPUT_TRIVYIGNORES: ${{ inputs.trivyignores }}
         INPUT_GITHUB_PAT: ${{ inputs.github-pat }}
         INPUT_LIMIT_SEVERITIES_FOR_SARIF: ${{ inputs.limit-severities-for-sarif }}
+        INPUT_USE_SCAN2HTML: ${{ inputs.use-scan2html }}
 
         # For Trivy
         TRIVY_CACHE_DIR: ${{ inputs.cache-dir }} # Always set
