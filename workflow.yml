@@ -44,3 +44,23 @@ jobs:
         with:
           name: trivy-scan2html-report
           path: trivy-results.html
+
+      - name: Generate JSON reports for vulnerabilities, misconfigs, and secrets
+        run: |
+          trivy image --format json --output vulnerabilities.json 'docker.io/my-organization/my-app:${{ github.sha }}'
+          trivy config --format json --output misconfigs.json .
+          trivy fs --scanners secret --format json --output secrets.json .
+
+      - name: Generate combined interactive HTML report from JSON files
+        uses: Fukuro192/trivy-scan2html-action@master
+        with:
+          scan2html-mode: 'generate'
+          scan2html-from: 'vulnerabilities.json,misconfigs.json,secrets.json'
+          scan2html-flags: 'true'
+          output: 'combined-report.html'
+
+      - name: Upload combined HTML report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-combined-report
+          path: combined-report.html

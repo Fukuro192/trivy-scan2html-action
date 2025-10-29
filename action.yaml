@@ -120,6 +120,18 @@ inputs:
     description: 'Use the scan2html plugin to generate interactive HTML reports'
     required: false
     default: 'true'
+  scan2html-mode:
+    description: 'Mode for scan2html plugin: "image" to run an image scan, "generate" to create HTML from existing JSON files'
+    required: false
+    default: 'image'
+  scan2html-from:
+    description: 'Comma-separated list of JSON files to generate HTML from (only used when scan2html-mode is "generate")'
+    required: false
+    default: ''
+  scan2html-flags:
+    description: 'Enable scan2html-flags option for the generate command'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -235,6 +247,9 @@ runs:
         INPUT_GITHUB_PAT: ${{ inputs.github-pat }}
         INPUT_LIMIT_SEVERITIES_FOR_SARIF: ${{ inputs.limit-severities-for-sarif }}
         INPUT_USE_SCAN2HTML: ${{ inputs.use-scan2html }}
+        INPUT_SCAN2HTML_MODE: ${{ inputs.scan2html-mode }}
+        INPUT_SCAN2HTML_FROM: ${{ inputs.scan2html-from }}
+        INPUT_SCAN2HTML_FLAGS: ${{ inputs.scan2html-flags }}
 
         # For Trivy
         TRIVY_CACHE_DIR: ${{ inputs.cache-dir }} # Always set
